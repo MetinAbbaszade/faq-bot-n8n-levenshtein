@@ -1,0 +1,453 @@
+{
+  "name": "FAQ Bot – Knowledge Base Matching",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "65f977c2-2b61-49a1-9243-00f607b42ea0",
+      "name": "Telegram Trigger",
+      "webhookId": "310368c0-ecbb-4ef5-8f61-7039d6798a76",
+      "credentials": {
+        "telegramApi": {
+          "id": "739xayWiy4TCVR0A",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "82d17fbe-89a8-4d3c-a1cf-c08adef7ad88",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "7d8dc861-902b-499f-ad99-7fb747bcc1ef",
+      "name": "has text?"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Hi {{ $json.message.from.first_name }} 👋 I can only answer text questions. Please type your question, for example: \"How do I reset my password?\"",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        192
+      ],
+      "id": "1a06ebe9-a90b-46a8-89ad-18c1020bad4b",
+      "name": "reply no text",
+      "webhookId": "351ebff8-dd0b-4767-b7be-6cf4c3ad59fc",
+      "credentials": {
+        "telegramApi": {
+          "id": "739xayWiy4TCVR0A",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1f7FrHXZzUgqzbnyh13VODXHU8oCjzcU6mKphXgtprXI",
+          "mode": "list",
+          "cachedResultName": "faq_mock_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f7FrHXZzUgqzbnyh13VODXHU8oCjzcU6mKphXgtprXI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1909015231,
+          "mode": "list",
+          "cachedResultName": "faq_mock_data.csv",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f7FrHXZzUgqzbnyh13VODXHU8oCjzcU6mKphXgtprXI/edit#gid=1909015231"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        512,
+        -144
+      ],
+      "id": "9ca1b601-0fc9-4077-8cb9-99f2bc90289b",
+      "name": "Read FAQ sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZTRZppOaMFVCUFso",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "c16c55db-b8fa-4681-9127-79736201f9ca",
+              "leftValue": "={{ $json.matched }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1184,
+        -144
+      ],
+      "id": "d86d1346-da10-433c-8db2-4a1186341179",
+      "name": "Above threshold"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.answer }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1488,
+        -176
+      ],
+      "id": "f6bcb561-efd4-4620-a4f0-c554643a7713",
+      "name": "reply answer",
+      "webhookId": "2aa46f41-8b7e-4401-8176-8778e7ae20e9",
+      "credentials": {
+        "telegramApi": {
+          "id": "739xayWiy4TCVR0A",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Hi {{ $json.user }} 👋\n\nSorry, I don't have an answer to that question yet. I've forwarded it to our support team, and someone will get back to you during working hours (Monday–Friday, 9:00–18:00, Baku time).\n\nIn the meantime, you can also write to support@example.com.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1488,
+        16
+      ],
+      "id": "85c27fae-0a0e-43be-afe6-2dda91c15c37",
+      "name": "reply escalation",
+      "webhookId": "77c3ba59-3584-42e3-9aea-e0491641ca85",
+      "credentials": {
+        "telegramApi": {
+          "id": "739xayWiy4TCVR0A",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1f7FrHXZzUgqzbnyh13VODXHU8oCjzcU6mKphXgtprXI",
+          "mode": "list",
+          "cachedResultName": "faq_mock_data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f7FrHXZzUgqzbnyh13VODXHU8oCjzcU6mKphXgtprXI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1649171789,
+          "mode": "list",
+          "cachedResultName": "unanswered questions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1f7FrHXZzUgqzbnyh13VODXHU8oCjzcU6mKphXgtprXI/edit#gid=1649171789"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $json.chatId }}",
+            "user": "={{ $json.user }}",
+            "question": "={{ $json.question }}",
+            "best_match_question_": "={{ $json.bestQuestion }}",
+            "best_score": "={{ $json.score }}",
+            "timestamp": "={{ $now.setZone('Asia/Baku').toFormat('yyyy-MM-dd HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user",
+              "displayName": "user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "question",
+              "displayName": "question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "best_match_question_",
+              "displayName": "best_match_question_",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "best_score",
+              "displayName": "best_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        160
+      ],
+      "id": "1df6eb69-3a2f-4f35-adb8-fedb333cff0b",
+      "name": "Log unanswered question",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZTRZppOaMFVCUFso",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b4a4f13d-9cce-45c0-9576-6110f784e754",
+              "name": "user_question",
+              "value": "={{ $('Telegram Trigger').first().json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "50f278c1-5603-4f68-9104-761fd50ec84b",
+              "name": "=chat_id",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "4d5fdb6f-8e82-4bfc-8f06-c3dabc5b586c",
+              "name": "user",
+              "value": "={{ $('Telegram Trigger').first().json.message.from.username || $('Telegram Trigger').first().json.message.from.first_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        736,
+        -144
+      ],
+      "id": "a2966ac7-578f-416e-9822-ae5ad517b068",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst THRESHOLD = 0.7; \n\nfunction normalize(text) {\n  return String(text ?? '')\n    .toLowerCase()\n    .replace(/[^\\p{L}\\p{N}\\s]/gu, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\n\nfunction levenshtein(a, b) {\n  const rows = a.length + 1;\n  const cols = b.length + 1;\n  const dp = Array.from({ length: rows }, () => new Array(cols).fill(0));\n\n  // Base cases: turning a string into an empty one (and back) costs its length\n  for (let i = 0; i < rows; i++) dp[i][0] = i;\n  for (let j = 0; j < cols; j++) dp[0][j] = j;\n\n  for (let i = 1; i < rows; i++) {\n    for (let j = 1; j < cols; j++) {\n      const cost = a[i - 1] === b[j - 1] ? 0 : 1;\n      dp[i][j] = Math.min(\n        dp[i - 1][j] + 1,        \n        dp[i][j - 1] + 1,        \n        dp[i - 1][j - 1] + cost \n      );\n    }\n  }\n\n  return dp[a.length][b.length];\n}\n\n// Turn the distance into a 0..1 score that is comparable between\n// short and long strings: 1 = identical, 0 = completely different.\nfunction similarity(a, b) {\n  const longest = Math.max(a.length, b.length);\n  if (longest === 0) return 1; // both empty\n  return 1 - levenshtein(a, b) / longest;\n}\n\n\nconst msg = $('Telegram Trigger').first().json.message;\nconst userQuestion = normalize(msg.text);\nconst faqRows = $input.all().map(item => item.json);\n\n\nlet best = { score: 0, question: null, answer: null };\n\nfor (const row of faqRows) {\n  if (!row.question || !row.answer) continue; \n\n  const score = similarity(userQuestion, normalize(row.question));\n  if (score > best.score) {\n    best = { score, question: row.question, answer: row.answer };\n  }\n}\n\n\nreturn [{\n  json: {\n    matched: best.score >= THRESHOLD,\n    score: Number(best.score.toFixed(3)),\n    threshold: THRESHOLD,\n    bestQuestion: best.question,\n    answer: best.answer,\n    question: msg.text,\n    chatId: msg.chat.id,\n    user: msg.from.username || msg.from.first_name,\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        -144
+      ],
+      "id": "6eac1feb-4264-403e-948f-f2f52ea05ca7",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "has text?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "has text?": {
+      "main": [
+        [
+          {
+            "node": "Read FAQ sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reply no text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read FAQ sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Above threshold": {
+      "main": [
+        [
+          {
+            "node": "reply answer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reply escalation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log unanswered question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Above threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1222dbfe-f017-484d-b519-6f6dbdd5ed7d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f50705e54022d3ad5fb8d0695bbe6a21883ee8b19c391050c1ae88c5e2388a51"
+  },
+  "nodeGroups": [],
+  "id": "Zs4cy2jhxzXnnFVe",
+  "tags": []
+}

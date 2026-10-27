@@ -1,0 +1,16 @@
+id,question,answer
+1,How do I reset my password?,"Go to the login page, tap Forgot password, and follow the link we send to your email. The link is valid for 1 hour."
+2,How can I change my email address?,"Open Settings > Account > Email, enter the new address, and confirm it with the link we send to it."
+3,What payment methods do you accept?,"We accept Visa, Mastercard, Apple Pay, Google Pay, and bank transfer."
+4,How do I get a refund?,You can request a refund within 14 days of purchase in Orders > Request refund. The money arrives in 5–7 business days.
+5,How do I cancel my subscription?,Go to Settings > Subscription > Cancel. You keep access until the end of the current billing period.
+6,What are your working hours?,"Our support team works Monday to Friday, 9:00–18:00 (Baku time)."
+7,How can I contact support?,Write to support@example.com or message this bot during working hours.
+8,How long does delivery take?,Delivery takes 1–2 business days in Baku and 3–5 business days in other regions.
+9,How can I track my order?,"Open Orders, select your order, and tap Track. You will also get an SMS with a tracking link."
+10,Do you deliver outside Azerbaijan?,Currently we only deliver within Azerbaijan.
+11,How do I delete my account?,Go to Settings > Account > Delete account. Your data is permanently removed after 30 days.
+12,Is my payment information secure?,"Yes. Payments are processed by a certified payment provider, and we never store your full card number."
+13,How do I change my delivery address?,You can change the delivery address in Orders before the order is shipped.
+14,Can I change my subscription plan?,Yes. Go to Settings > Subscription > Change plan. The new price applies from the next billing period.
+15,Why was I charged twice?,"A second charge is usually a temporary authorization that disappears within 3 business days. If it does not, contact support with your order number."
